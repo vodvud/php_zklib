@@ -1,6 +1,10 @@
 <?php
 
-class ZKPin
+namespace ZK;
+
+use ZKLib;
+
+class Pin
 {
     /**
      * @param ZKLib $self
@@ -8,7 +12,7 @@ class ZKPin
      */
     public function width(ZKLib $self)
     {
-        $command = ZKConst::CMD_DEVICE;
+        $command = Constant::CMD_DEVICE;
         $command_string = '~PIN2Width';
 
         return $self->_command($command, $command_string);

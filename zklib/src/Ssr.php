@@ -1,6 +1,10 @@
 <?php
 
-class ZKSsr
+namespace ZK;
+
+use ZKLib;
+
+class Ssr
 {
     /**
      * @param ZKLib $self
@@ -8,7 +12,7 @@ class ZKSsr
      */
     public function get(ZKLib $self)
     {
-        $command = ZKConst::CMD_DEVICE;
+        $command = Constant::CMD_DEVICE;
         $command_string = '~SSR';
 
         return $self->_command($command, $command_string);

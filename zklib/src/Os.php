@@ -1,17 +1,20 @@
 <?php
 
-class ZKFace
+namespace ZK;
+
+use ZKLib;
+
+class Os
 {
     /**
      * @param ZKLib $self
      * @return bool|mixed
      */
-    public function on(ZKLib $self)
+    public function get(ZKLib $self)
     {
-        $command = ZKConst::CMD_DEVICE;
-        $command_string = 'FaceFunOn';
+        $command = Constant::CMD_DEVICE;
+        $command_string = '~OS';
 
         return $self->_command($command, $command_string);
     }
 }
-

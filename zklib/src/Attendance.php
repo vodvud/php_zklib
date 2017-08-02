@@ -1,6 +1,10 @@
 <?php
 
-class ZKAttendance
+namespace ZK;
+
+use ZKLib;
+
+class Attendance
 {
     /**
      * @param ZKLib $self
@@ -8,16 +12,16 @@ class ZKAttendance
      */
     public function get(ZKLib $self)
     {
-        $command = ZKConst::CMD_ATT_LOG_RRQ;
+        $command = Constant::CMD_ATT_LOG_RRQ;
         $command_string = '';
 
-        $session_id = $self->_command($command, $command_string, ZKConst::COMMAND_TYPE_DATA);
+        $session_id = $self->_command($command, $command_string, Constant::COMMAND_TYPE_DATA);
 
         if ($session_id === false) {
             return [];
         }
 
-        if ($bytes = ZKConst::getSize($self)) {
+        if ($bytes = Constant::getSize($self)) {
             while ($bytes > 0) {
                 @socket_recvfrom($self->_zkclient, $data_recv, 1032, 0, $self->_ip, $self->_port);
                 array_push($self->_attendance_data, $data_recv);
@@ -48,7 +52,7 @@ class ZKAttendance
                 $uid = $u1 + ($u2 * 256);
                 $id = intval(str_replace("\0", '', hex2bin(substr($u[1], 6, 8))));
                 $state = hexdec(substr($u[1], 56, 2));
-                $timestamp = ZKConst::decode_time(hexdec(ZKConst::reverseHex(substr($u[1], 58, 8))));
+                $timestamp = Constant::decode_time(hexdec(Constant::reverseHex(substr($u[1], 58, 8))));
 
                 array_push($attendance, [
                     'uid' => $uid,
@@ -71,7 +75,7 @@ class ZKAttendance
      */
     public function clear(ZKLib $self)
     {
-        $command = ZKConst::CMD_CLEAR_ATT_LOG;
+        $command = Constant::CMD_CLEAR_ATT_LOG;
         $command_string = '';
 
         return $self->_command($command, $command_string);

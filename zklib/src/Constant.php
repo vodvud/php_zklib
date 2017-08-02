@@ -1,6 +1,10 @@
 <?php
 
-class ZKConst
+namespace ZK;
+
+use ZKLib;
+
+class Constant
 {
     const USHRT_MAX = 65535;
 

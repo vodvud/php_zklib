@@ -1,6 +1,12 @@
 <?php
 
-class ZKUser
+namespace ZK;
+
+use ZKLib;
+use ErrorException;
+use Exception;
+
+class User
 {
     /**
      * @param ZKLib $self
@@ -8,12 +14,12 @@ class ZKUser
      * @param string $userid
      * @param string $name
      * @param string $password
-     * @param int $role Default ZKConst::LEVEL_USER
+     * @param int $role Default Constant::LEVEL_USER
      * @return bool|mixed
      */
-    public function set(ZKLib $self, $uid, $userid, $name, $password, $role = ZKConst::LEVEL_USER)
+    public function set(ZKLib $self, $uid, $userid, $name, $password, $role = Constant::LEVEL_USER)
     {
-        $command = ZKConst::CMD_SET_USER;
+        $command = Constant::CMD_SET_USER;
         $byte1 = chr((int)($uid % 256));
         $byte2 = chr((int)($uid >> 8));
         $command_string = $byte1 . $byte2 . chr($role) . str_pad($password, 8, chr(0)) . str_pad($name, 28, chr(0))
@@ -28,17 +34,17 @@ class ZKUser
      */
     public function get(ZKLib $self)
     {
-        $command = ZKConst::CMD_USER_TEMP_RRQ;
+        $command = Constant::CMD_USER_TEMP_RRQ;
         $command_string = chr(5);
 
-        $session_id = $self->_command($command, $command_string, ZKConst::COMMAND_TYPE_DATA);
+        $session_id = $self->_command($command, $command_string, Constant::COMMAND_TYPE_DATA);
 
         if ($session_id === false) {
             return [];
         }
 
         try {
-            if ($bytes = ZKConst::getSize($self)) {
+            if ($bytes = Constant::getSize($self)) {
                 while ($bytes > 0) {
                     @socket_recvfrom($self->_zkclient, $data_recv, 1032, 0, $self->_ip, $self->_port);
                     array_push($self->_user_data, $data_recv);
@@ -115,7 +121,7 @@ class ZKUser
      */
     public function clear(ZKLib $self)
     {
-        $command = ZKConst::CMD_CLEAR_DATA;
+        $command = Constant::CMD_CLEAR_DATA;
         $command_string = '';
 
         return $self->_command($command, $command_string);
@@ -127,7 +133,7 @@ class ZKUser
      */
     public function clearAdmin(ZKLib $self)
     {
-        $command = ZKConst::CMD_CLEAR_ADMIN;
+        $command = Constant::CMD_CLEAR_ADMIN;
         $command_string = '';
 
         return $self->_command($command, $command_string);

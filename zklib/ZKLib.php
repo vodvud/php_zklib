@@ -1,6 +1,8 @@
 <?php
 require(__DIR__ . '/vendor/autoload.php');
 
+use ZK\Constant;
+
 class ZKLib
 {
     public $_ip;
@@ -47,8 +49,8 @@ class ZKLib
 
             $chksum += $u[1];
 
-            if ($chksum > ZKConst::USHRT_MAX) {
-                $chksum -= ZKConst::USHRT_MAX;
+            if ($chksum > Constant::USHRT_MAX) {
+                $chksum -= Constant::USHRT_MAX;
             }
             $i -= 2;
             $j += 2;
@@ -58,8 +60,8 @@ class ZKLib
             $chksum = $chksum + $p['c' . strval(count($p))];
         }
 
-        while ($chksum > ZKConst::USHRT_MAX) {
-            $chksum -= ZKConst::USHRT_MAX;
+        while ($chksum > Constant::USHRT_MAX) {
+            $chksum -= Constant::USHRT_MAX;
         }
 
         if ($chksum > 0) {
@@ -70,7 +72,7 @@ class ZKLib
 
         $chksum -= 1;
         while ($chksum < 0) {
-            $chksum += ZKConst::USHRT_MAX;
+            $chksum += Constant::USHRT_MAX;
         }
 
         return pack('S', $chksum);
@@ -100,8 +102,8 @@ class ZKLib
 
         $reply_id += 1;
 
-        if ($reply_id >= ZKConst::USHRT_MAX) {
-            $reply_id -= ZKConst::USHRT_MAX;
+        if ($reply_id >= Constant::USHRT_MAX) {
+            $reply_id -= Constant::USHRT_MAX;
         }
 
         $buf = pack('SSSS', $command, $chksum, $session_id, $reply_id);
@@ -111,7 +113,7 @@ class ZKLib
     }
 
     /**
-     * Checks a returned packet to see if it returned ZKConst::CMD_ACK_OK,
+     * Checks a returned packet to see if it returned Constant::CMD_ACK_OK,
      * indicating success
      *
      * @inheritdoc
@@ -121,7 +123,7 @@ class ZKLib
         $u = unpack('H2h1/H2h2', substr($reply, 0, 8));
 
         $command = hexdec($u['h2'] . $u['h1']);
-        if ($command == ZKConst::CMD_ACK_OK) {
+        if ($command == Constant::CMD_ACK_OK) {
             return true;
         } else {
             return false;
@@ -136,7 +138,7 @@ class ZKLib
      * @param string $type
      * @return bool|mixed
      */
-    public function _command($command, $command_string, $type = ZKConst::COMMAND_TYPE_GENERAL)
+    public function _command($command, $command_string, $type = Constant::COMMAND_TYPE_GENERAL)
     {
         $chksum = 0;
         $session_id = $this->_session_id;
@@ -154,11 +156,11 @@ class ZKLib
             $u = unpack('H2h1/H2h2/H2h3/H2h4/H2h5/H2h6', substr($this->_data_recv, 0, 8));
 
             switch ($type) {
-                case ZKConst::COMMAND_TYPE_GENERAL:
+                case Constant::COMMAND_TYPE_GENERAL:
                     $this->_session_id = hexdec($u['h6'] . $u['h5']);
                     $ret = substr($this->_data_recv, 8);
                     break;
-                case ZKConst::COMMAND_TYPE_DATA:
+                case Constant::COMMAND_TYPE_DATA:
                     $ret = hexdec($u['h6'] . $u['h5']);
                     break;
                 default:
@@ -180,7 +182,7 @@ class ZKLib
      */
     public function connect()
     {
-        return (new ZKConnect())->connect($this);
+        return (new ZK\Connect())->connect($this);
     }
 
     /**
@@ -190,7 +192,7 @@ class ZKLib
      */
     public function disconnect()
     {
-        return (new ZKConnect())->disconnect($this);
+        return (new ZK\Connect())->disconnect($this);
     }
 
     /**
@@ -200,7 +202,7 @@ class ZKLib
      */
     public function version()
     {
-        return (new ZKVersion())->get($this);
+        return (new ZK\Version())->get($this);
     }
 
     /**
@@ -210,7 +212,7 @@ class ZKLib
      */
     public function osVersion()
     {
-        return (new ZKOs())->get($this);
+        return (new ZK\Os())->get($this);
     }
 
     /**
@@ -220,7 +222,7 @@ class ZKLib
      */
     public function platform()
     {
-        return (new ZKPlatform())->get($this);
+        return (new ZK\Platform())->get($this);
     }
 
     /**
@@ -230,7 +232,7 @@ class ZKLib
      */
     public function fmVersion()
     {
-        return (new ZKPlatform())->getVersion($this);
+        return (new ZK\Platform())->getVersion($this);
     }
 
     /**
@@ -240,7 +242,7 @@ class ZKLib
      */
     public function workCode()
     {
-        return (new ZKWorkCode())->get($this);
+        return (new ZK\WorkCode())->get($this);
     }
 
     /**
@@ -250,7 +252,7 @@ class ZKLib
      */
     public function ssr()
     {
-        return (new ZKSsr())->get($this);
+        return (new ZK\Ssr())->get($this);
     }
 
     /**
@@ -260,7 +262,7 @@ class ZKLib
      */
     public function pinWidth()
     {
-        return (new ZKPin())->width($this);
+        return (new ZK\Pin())->width($this);
     }
 
     /**
@@ -268,7 +270,7 @@ class ZKLib
      */
     public function faceFunctionOn()
     {
-        return (new ZKFace())->on($this);
+        return (new ZK\Face())->on($this);
     }
 
     /**
@@ -278,7 +280,7 @@ class ZKLib
      */
     public function serialNumber()
     {
-        return (new ZKSerialNumber())->get($this);
+        return (new ZK\SerialNumber())->get($this);
     }
 
     /**
@@ -288,7 +290,7 @@ class ZKLib
      */
     public function deviceName()
     {
-        return (new ZKDevice())->name($this);
+        return (new ZK\Device())->name($this);
     }
 
     /**
@@ -298,7 +300,7 @@ class ZKLib
      */
     public function disableDevice()
     {
-        return (new ZKDevice())->disable($this);
+        return (new ZK\Device())->disable($this);
     }
 
     /**
@@ -308,7 +310,7 @@ class ZKLib
      */
     public function enableDevice()
     {
-        return (new ZKDevice())->enable($this);
+        return (new ZK\Device())->enable($this);
     }
 
     /**
@@ -318,7 +320,7 @@ class ZKLib
      */
     public function getUser()
     {
-        return (new ZKUser())->get($this);
+        return (new ZK\User())->get($this);
     }
 
     /**
@@ -328,12 +330,12 @@ class ZKLib
      * @param string $userid ID in DB (same like $uid)
      * @param string $name
      * @param string $password
-     * @param int $role Default ZKConst::LEVEL_USER
+     * @param int $role Default Constant::LEVEL_USER
      * @return bool|mixed
      */
-    public function setUser($uid, $userid, $name, $password, $role = ZKConst::LEVEL_USER)
+    public function setUser($uid, $userid, $name, $password, $role = Constant::LEVEL_USER)
     {
-        return (new ZKUser())->set($this, $uid, $userid, $name, $password, $role);
+        return (new ZK\User())->set($this, $uid, $userid, $name, $password, $role);
     }
 
     /**
@@ -343,7 +345,7 @@ class ZKLib
      */
     public function clearUser()
     {
-        return (new ZKUser())->clear($this);
+        return (new ZK\User())->clear($this);
     }
 
     /**
@@ -353,7 +355,7 @@ class ZKLib
      */
     public function clearAdmin()
     {
-        return (new ZKUser())->clearAdmin($this);
+        return (new ZK\User())->clearAdmin($this);
     }
 
     /**
@@ -363,7 +365,7 @@ class ZKLib
      */
     public function getAttendance()
     {
-        return (new ZKAttendance())->get($this);
+        return (new ZK\Attendance())->get($this);
     }
 
     /**
@@ -373,7 +375,7 @@ class ZKLib
      */
     public function clearAttendance()
     {
-        return (new ZKAttendance())->clear($this);
+        return (new ZK\Attendance())->clear($this);
     }
 
     /**
@@ -384,7 +386,7 @@ class ZKLib
      */
     public function setTime($t)
     {
-        return (new ZKTime())->set($this, $t);
+        return (new ZK\Time())->set($this, $t);
     }
 
     /**
@@ -394,6 +396,6 @@ class ZKLib
      */
     public function getTime()
     {
-        return (new ZKTime())->get($this);
+        return (new ZK\Time())->get($this);
     }
 }

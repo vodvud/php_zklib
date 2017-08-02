@@ -1,6 +1,12 @@
 <?php
 
-class ZKConnect
+namespace ZK;
+
+use ZKLib;
+use ErrorException;
+use Exception;
+
+class Connect
 {
     /**
      * @param ZKLib $self
@@ -8,11 +14,11 @@ class ZKConnect
      */
     public function connect(ZKLib $self)
     {
-        $command = ZKConst::CMD_CONNECT;
+        $command = Constant::CMD_CONNECT;
         $command_string = '';
         $chksum = 0;
         $session_id = 0;
-        $reply_id = -1 + ZKConst::USHRT_MAX;
+        $reply_id = -1 + Constant::USHRT_MAX;
 
         $buf = $self->_createHeader($command, $chksum, $session_id, $reply_id, $command_string);
 
@@ -41,7 +47,7 @@ class ZKConnect
      */
     public function disconnect(ZKLib $self)
     {
-        $command = ZKConst::CMD_EXIT;
+        $command = Constant::CMD_EXIT;
         $command_string = '';
         $chksum = 0;
         $session_id = $self->_session_id;

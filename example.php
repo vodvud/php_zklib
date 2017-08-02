@@ -76,10 +76,10 @@
                     $names[$uItem['uid']] = $uItem['name'];
 
                     switch ($uItem['role']) {
-                        case ZKConst::LEVEL_USER:
+                        case ZK\Constant::LEVEL_USER:
                             $role = 'User';
                             break;
-                        case ZKConst::LEVEL_ADMIN:
+                        case ZK\Constant::LEVEL_ADMIN:
                             $role = 'Admin';
                             break;
                         default:
@@ -139,7 +139,7 @@
         //$zk->clearAttendance();
         //sleep(1);
 
-        $zk->setTime(date('Y-m-d H:i:s'));
+        //$zk->setTime(date('Y-m-d H:i:s'));
 
         $zk->enableDevice();
         sleep(1);

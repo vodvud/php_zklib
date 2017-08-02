@@ -1,6 +1,10 @@
 <?php
 
-class ZKDevice
+namespace ZK;
+
+use ZKLib;
+
+class Device
 {
     /**
      * @param ZKLib $self
@@ -8,7 +12,7 @@ class ZKDevice
      */
     public function name(ZKLib $self)
     {
-        $command = ZKConst::CMD_DEVICE;
+        $command = Constant::CMD_DEVICE;
         $command_string = '~DeviceName';
 
         return $self->_command($command, $command_string);
@@ -20,7 +24,7 @@ class ZKDevice
      */
     public function enable(ZKLib $self)
     {
-        $command = ZKConst::CMD_ENABLE_DEVICE;
+        $command = Constant::CMD_ENABLE_DEVICE;
         $command_string = '';
 
         return $self->_command($command, $command_string);
@@ -32,7 +36,7 @@ class ZKDevice
      */
     public function disable(ZKLib $self)
     {
-        $command = ZKConst::CMD_DISABLE_DEVICE;
+        $command = Constant::CMD_DISABLE_DEVICE;
         $command_string = chr(0) . chr(0);
 
         return $self->_command($command, $command_string);

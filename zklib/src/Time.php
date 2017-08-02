@@ -1,6 +1,10 @@
 <?php
 
-class ZKTime
+namespace ZK;
+
+use ZKLib;
+
+class Time
 {
     /**
      * @param ZKLib $self
@@ -9,8 +13,8 @@ class ZKTime
      */
     public function set(ZKLib $self, $t)
     {
-        $command = ZKConst::CMD_SET_TIME;
-        $command_string = pack('I', ZKConst::encode_time($t));
+        $command = Constant::CMD_SET_TIME;
+        $command_string = pack('I', Constant::encode_time($t));
 
         return $self->_command($command, $command_string);
     }
@@ -21,13 +25,13 @@ class ZKTime
      */
     public function get(ZKLib $self)
     {
-        $command = ZKConst::CMD_GET_TIME;
+        $command = Constant::CMD_GET_TIME;
         $command_string = '';
 
         $ret = $self->_command($command, $command_string);
 
         if ($ret) {
-            return ZKConst::decode_time(hexdec(ZKConst::reverseHex(bin2hex($ret))));
+            return Constant::decode_time(hexdec(Constant::reverseHex(bin2hex($ret))));
         } else {
             return false;
         }

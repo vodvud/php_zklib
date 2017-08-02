@@ -1,6 +1,10 @@
 <?php
 
-class ZKOs
+namespace ZK;
+
+use ZKLib;
+
+class WorkCode
 {
     /**
      * @param ZKLib $self
@@ -8,8 +12,8 @@ class ZKOs
      */
     public function get(ZKLib $self)
     {
-        $command = ZKConst::CMD_DEVICE;
-        $command_string = '~OS';
+        $command = Constant::CMD_DEVICE;
+        $command_string = 'WorkCode';
 
         return $self->_command($command, $command_string);
     }

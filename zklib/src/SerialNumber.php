@@ -1,6 +1,10 @@
 <?php
 
-class ZKSerialNumber
+namespace ZK;
+
+use ZKLib;
+
+class SerialNumber
 {
     /**
      * @param ZKLib $self
@@ -8,7 +12,7 @@ class ZKSerialNumber
      */
     public function get(ZKLib $self)
     {
-        $command = ZKConst::CMD_DEVICE;
+        $command = Constant::CMD_DEVICE;
         $command_string = '~SerialNumber';
 
         return $self->_command($command, $command_string);
