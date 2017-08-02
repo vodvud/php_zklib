@@ -5,7 +5,7 @@
 
 <body>
 <?php
-    include("zklib/ZKLib.php");
+    include('zklib/ZKLib.php');
 
     $zk = new ZKLib(
         '192.168.2.228' //your device IP
@@ -66,10 +66,10 @@
             try {
                 $names = [];
 
-                //$zk->setUser(1, '1', 'User1', '', ZKConst::LEVEL_USER);
-                //$zk->setUser(2, '2', 'User2', '', ZKConst::LEVEL_USER);
-                //$zk->setUser(3, '3', 'User3', '', ZKConst::LEVEL_USER);
-                //$zk->setUser(5, '5', 'Admin', '1234', ZKConst::LEVEL_ADMIN);
+                //$zk->setUser(1, '1', 'User1', '', ZK\Constant::LEVEL_USER);
+                //$zk->setUser(2, '2', 'User2', '', ZK\Constant::LEVEL_USER);
+                //$zk->setUser(3, '3', 'User3', '', ZK\Constant::LEVEL_USER);
+                //$zk->setUser(5, '5', 'Admin', '1234', ZK\Constant::LEVEL_ADMIN);
                 $users = $zk->getUser();
                 sleep(1);
                 foreach ($users as $uItem) {
@@ -119,11 +119,11 @@
                 <th>Time</th>
             </tr>
             <?php
-            $attendance = $zk->getAttendance();
-            $attendance = array_reverse($attendance, true);
-            sleep(1);
-            foreach ($attendance as $idx => $attItem) {
-                ?>
+                $attendance = $zk->getAttendance();
+                $attendance = array_reverse($attendance, true);
+                sleep(1);
+                foreach ($attendance as $idx => $attItem) {
+            ?>
                 <tr>
                     <td><?php echo($idx + 1) ?></td>
                     <td><?php echo $attItem['uid'] ?></td>
