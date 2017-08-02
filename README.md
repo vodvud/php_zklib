@@ -1,3 +1,5 @@
 # PHP ZKLib #
 
-Attendance Machine Library for PHP with a connection to the network using the UDP protocol and port 4370
+PHP library to interacts with ZK Time and Attendance Devices.
+
+Library for connecting under the network using the UDP protocol and port 4370 

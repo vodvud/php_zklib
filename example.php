@@ -7,7 +7,9 @@
 <?php
     include("zklib/ZKLib.php");
 
-    $zk = new ZKLib('192.168.2.228');
+    $zk = new ZKLib(
+        '192.168.2.228' //your device IP
+    );
 
     $ret = $zk->connect();
     sleep(1);
