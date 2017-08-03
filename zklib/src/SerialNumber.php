@@ -12,7 +12,7 @@ class SerialNumber
      */
     public function get(ZKLib $self)
     {
-        $command = Constant::CMD_DEVICE;
+        $command = Util::CMD_DEVICE;
         $command_string = '~SerialNumber';
 
         return $self->_command($command, $command_string);

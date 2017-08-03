@@ -1,7 +1,7 @@
 <?php
 require(__DIR__ . '/vendor/autoload.php');
 
-use ZK\Constant;
+use ZK\Util;
 
 class ZKLib
 {
@@ -32,105 +32,6 @@ class ZKLib
     }
 
     /**
-     * This function calculates the chksum of the packet to be sent to the
-     * time clock
-     * Copied from zkemsdk.c
-     *
-     * @inheritdoc
-     */
-    public function _createChkSum($p)
-    {
-        $l = count($p);
-        $chksum = 0;
-        $i = $l;
-        $j = 1;
-        while ($i > 1) {
-            $u = unpack('S', pack('C2', $p['c' . $j], $p['c' . ($j + 1)]));
-
-            $chksum += $u[1];
-
-            if ($chksum > Constant::USHRT_MAX) {
-                $chksum -= Constant::USHRT_MAX;
-            }
-            $i -= 2;
-            $j += 2;
-        }
-
-        if ($i) {
-            $chksum = $chksum + $p['c' . strval(count($p))];
-        }
-
-        while ($chksum > Constant::USHRT_MAX) {
-            $chksum -= Constant::USHRT_MAX;
-        }
-
-        if ($chksum > 0) {
-            $chksum = -($chksum);
-        } else {
-            $chksum = abs($chksum);
-        }
-
-        $chksum -= 1;
-        while ($chksum < 0) {
-            $chksum += Constant::USHRT_MAX;
-        }
-
-        return pack('S', $chksum);
-    }
-
-    /**
-     * This function puts a the parts that make up a packet together and
-     * packs them into a byte string
-     *
-     * @inheritdoc
-     */
-    public function _createHeader($command, $chksum, $session_id, $reply_id, $command_string)
-    {
-        $buf = pack('SSSS', $command, $chksum, $session_id, $reply_id) . $command_string;
-
-        $buf = unpack('C' . (8 + strlen($command_string)) . 'c', $buf);
-
-        $u = unpack('S', $this->_createChkSum($buf));
-
-        if (is_array($u)) {
-            while (list($key) = each($u)) {
-                $u = $u[$key];
-                break;
-            }
-        }
-        $chksum = $u;
-
-        $reply_id += 1;
-
-        if ($reply_id >= Constant::USHRT_MAX) {
-            $reply_id -= Constant::USHRT_MAX;
-        }
-
-        $buf = pack('SSSS', $command, $chksum, $session_id, $reply_id);
-
-        return $buf . $command_string;
-
-    }
-
-    /**
-     * Checks a returned packet to see if it returned Constant::CMD_ACK_OK,
-     * indicating success
-     *
-     * @inheritdoc
-     */
-    public function _checkValid($reply)
-    {
-        $u = unpack('H2h1/H2h2', substr($reply, 0, 8));
-
-        $command = hexdec($u['h2'] . $u['h1']);
-        if ($command == Constant::CMD_ACK_OK) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Create and send command to device
      *
      * @param string $command
@@ -138,7 +39,7 @@ class ZKLib
      * @param string $type
      * @return bool|mixed
      */
-    public function _command($command, $command_string, $type = Constant::COMMAND_TYPE_GENERAL)
+    public function _command($command, $command_string, $type = Util::COMMAND_TYPE_GENERAL)
     {
         $chksum = 0;
         $session_id = $this->_session_id;
@@ -146,7 +47,7 @@ class ZKLib
         $u = unpack('H2h1/H2h2/H2h3/H2h4/H2h5/H2h6/H2h7/H2h8', substr($this->_data_recv, 0, 8));
         $reply_id = hexdec($u['h8'] . $u['h7']);
 
-        $buf = $this->_createHeader($command, $chksum, $session_id, $reply_id, $command_string);
+        $buf = Util::createHeader($command, $chksum, $session_id, $reply_id, $command_string);
 
         socket_sendto($this->_zkclient, $buf, strlen($buf), 0, $this->_ip, $this->_port);
 
@@ -156,11 +57,11 @@ class ZKLib
             $u = unpack('H2h1/H2h2/H2h3/H2h4/H2h5/H2h6', substr($this->_data_recv, 0, 8));
 
             switch ($type) {
-                case Constant::COMMAND_TYPE_GENERAL:
+                case Util::COMMAND_TYPE_GENERAL:
                     $this->_session_id = hexdec($u['h6'] . $u['h5']);
                     $ret = substr($this->_data_recv, 8);
                     break;
-                case Constant::COMMAND_TYPE_DATA:
+                case Util::COMMAND_TYPE_DATA:
                     $ret = hexdec($u['h6'] . $u['h5']);
                     break;
                 default:
@@ -316,7 +217,7 @@ class ZKLib
     /**
      * Get users data
      *
-     * @return array|bool
+     * @return array [userid, name, cardno, uid, role, password]
      */
     public function getUser()
     {
@@ -330,10 +231,10 @@ class ZKLib
      * @param string $userid ID in DB (same like $uid)
      * @param string $name
      * @param string $password
-     * @param int $role Default Constant::LEVEL_USER
+     * @param int $role Default Util::LEVEL_USER
      * @return bool|mixed
      */
-    public function setUser($uid, $userid, $name, $password, $role = Constant::LEVEL_USER)
+    public function setUser($uid, $userid, $name, $password, $role = Util::LEVEL_USER)
     {
         return (new ZK\User())->set($this, $uid, $userid, $name, $password, $role);
     }
@@ -361,7 +262,7 @@ class ZKLib
     /**
      * Get attendance log
      *
-     * @return array
+     * @return array [uid, id, state, timestamp]
      */
     public function getAttendance()
     {

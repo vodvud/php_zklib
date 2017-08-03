@@ -12,7 +12,7 @@ class Face
      */
     public function on(ZKLib $self)
     {
-        $command = Constant::CMD_DEVICE;
+        $command = Util::CMD_DEVICE;
         $command_string = 'FaceFunOn';
 
         return $self->_command($command, $command_string);

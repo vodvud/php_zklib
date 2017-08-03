@@ -12,7 +12,7 @@ class WorkCode
      */
     public function get(ZKLib $self)
     {
-        $command = Constant::CMD_DEVICE;
+        $command = Util::CMD_DEVICE;
         $command_string = 'WorkCode';
 
         return $self->_command($command, $command_string);

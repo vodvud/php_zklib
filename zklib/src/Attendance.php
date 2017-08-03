@@ -8,20 +8,20 @@ class Attendance
 {
     /**
      * @param ZKLib $self
-     * @return array
+     * @return array [uid, id, state, timestamp]
      */
     public function get(ZKLib $self)
     {
-        $command = Constant::CMD_ATT_LOG_RRQ;
+        $command = Util::CMD_ATT_LOG_RRQ;
         $command_string = '';
 
-        $session_id = $self->_command($command, $command_string, Constant::COMMAND_TYPE_DATA);
+        $session_id = $self->_command($command, $command_string, Util::COMMAND_TYPE_DATA);
 
         if ($session_id === false) {
             return [];
         }
 
-        if ($bytes = Constant::getSize($self)) {
+        if ($bytes = Util::getSize($self)) {
             while ($bytes > 0) {
                 @socket_recvfrom($self->_zkclient, $data_recv, 1032, 0, $self->_ip, $self->_port);
                 array_push($self->_attendance_data, $data_recv);
@@ -41,27 +41,27 @@ class Attendance
                 }
             }
 
-            $attendanceData = implode('', $self->_attendance_data);
-            $attendanceData = substr($attendanceData, 10);
+            $attData = implode('', $self->_attendance_data);
+            $attData = substr($attData, 10);
 
-            while (strlen($attendanceData) > 40) {
-                $u = unpack('H78', substr($attendanceData, 0, 39));
+            while (strlen($attData) > 40) {
+                $u = unpack('H78', substr($attData, 0, 39));
 
                 $u1 = hexdec(substr($u[1], 4, 2));
                 $u2 = hexdec(substr($u[1], 6, 2));
                 $uid = $u1 + ($u2 * 256);
                 $id = intval(str_replace("\0", '', hex2bin(substr($u[1], 6, 8))));
                 $state = hexdec(substr($u[1], 56, 2));
-                $timestamp = Constant::decode_time(hexdec(Constant::reverseHex(substr($u[1], 58, 8))));
+                $timestamp = Util::decodeTime(hexdec(Util::reverseHex(substr($u[1], 58, 8))));
 
-                array_push($attendance, [
+                $attendance[] = [
                     'uid' => $uid,
                     'id' => $id,
                     'state' => $state,
                     'timestamp' => $timestamp
-                ]);
+                ];
 
-                $attendanceData = substr($attendanceData, 40);
+                $attData = substr($attData, 40);
             }
 
         }
@@ -75,7 +75,7 @@ class Attendance
      */
     public function clear(ZKLib $self)
     {
-        $command = Constant::CMD_CLEAR_ATT_LOG;
+        $command = Util::CMD_CLEAR_ATT_LOG;
         $command_string = '';
 
         return $self->_command($command, $command_string);

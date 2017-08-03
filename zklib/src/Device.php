@@ -12,7 +12,7 @@ class Device
      */
     public function name(ZKLib $self)
     {
-        $command = Constant::CMD_DEVICE;
+        $command = Util::CMD_DEVICE;
         $command_string = '~DeviceName';
 
         return $self->_command($command, $command_string);
@@ -24,7 +24,7 @@ class Device
      */
     public function enable(ZKLib $self)
     {
-        $command = Constant::CMD_ENABLE_DEVICE;
+        $command = Util::CMD_ENABLE_DEVICE;
         $command_string = '';
 
         return $self->_command($command, $command_string);
@@ -36,7 +36,7 @@ class Device
      */
     public function disable(ZKLib $self)
     {
-        $command = Constant::CMD_DISABLE_DEVICE;
+        $command = Util::CMD_DISABLE_DEVICE;
         $command_string = chr(0) . chr(0);
 
         return $self->_command($command, $command_string);

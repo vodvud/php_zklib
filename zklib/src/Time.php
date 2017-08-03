@@ -13,8 +13,8 @@ class Time
      */
     public function set(ZKLib $self, $t)
     {
-        $command = Constant::CMD_SET_TIME;
-        $command_string = pack('I', Constant::encode_time($t));
+        $command = Util::CMD_SET_TIME;
+        $command_string = pack('I', Util::encodeTime($t));
 
         return $self->_command($command, $command_string);
     }
@@ -25,13 +25,13 @@ class Time
      */
     public function get(ZKLib $self)
     {
-        $command = Constant::CMD_GET_TIME;
+        $command = Util::CMD_GET_TIME;
         $command_string = '';
 
         $ret = $self->_command($command, $command_string);
 
         if ($ret) {
-            return Constant::decode_time(hexdec(Constant::reverseHex(bin2hex($ret))));
+            return Util::decodeTime(hexdec(Util::reverseHex(bin2hex($ret))));
         } else {
             return false;
         }

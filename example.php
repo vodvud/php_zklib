@@ -13,7 +13,7 @@
 
     $ret = $zk->connect();
     sleep(1);
-    if ($ret):
+    if ($ret) {
         $zk->disableDevice();
         sleep(1);
         ?>
@@ -22,31 +22,31 @@
                 <td><b>Status</b></td>
                 <td>Connected</td>
                 <td><b>Version</b></td>
-                <td><?php echo $zk->version() ?></td>
+                <td><?php echo($zk->version()); ?></td>
                 <td><b>OS Version</b></td>
-                <td><?php echo $zk->osVersion() ?></td>
+                <td><?php echo($zk->osVersion()); ?></td>
                 <td><b>Platform</b></td>
-                <td><?php echo $zk->platform() ?></td>
+                <td><?php echo($zk->platform()); ?></td>
             </tr>
             <tr>
                 <td><b>Firmware Version</b></td>
-                <td><?php echo $zk->fmVersion() ?></td>
+                <td><?php echo($zk->fmVersion()); ?></td>
                 <td><b>WorkCode</b></td>
-                <td><?php echo $zk->workCode() ?></td>
+                <td><?php echo($zk->workCode()); ?></td>
                 <td><b>SSR</b></td>
-                <td><?php echo $zk->ssr() ?></td>
+                <td><?php echo($zk->ssr()); ?></td>
                 <td><b>Pin Width</b></td>
-                <td><?php echo $zk->pinWidth() ?></td>
+                <td><?php echo($zk->pinWidth()); ?></td>
             </tr>
             <tr>
                 <td><b>Face Function On</b></td>
-                <td><?php echo $zk->faceFunctionOn() ?></td>
+                <td><?php echo($zk->faceFunctionOn()); ?></td>
                 <td><b>Serial Number</b></td>
-                <td><?php echo $zk->serialNumber() ?></td>
+                <td><?php echo($zk->serialNumber()); ?></td>
                 <td><b>Device Name</b></td>
-                <td><?php echo $zk->deviceName(); ?></td>
+                <td><?php echo($zk->deviceName()); ?></td>
                 <td><b>Get Time</b></td>
-                <td><?php echo $zk->getTime() ?></td>
+                <td><?php echo($zk->getTime()); ?></td>
             </tr>
         </table>
         <hr/>
@@ -64,22 +64,18 @@
             </tr>
             <?php
             try {
-                $names = [];
-
-                //$zk->setUser(1, '1', 'User1', '', ZK\Constant::LEVEL_USER);
-                //$zk->setUser(2, '2', 'User2', '', ZK\Constant::LEVEL_USER);
-                //$zk->setUser(3, '3', 'User3', '', ZK\Constant::LEVEL_USER);
-                //$zk->setUser(5, '5', 'Admin', '1234', ZK\Constant::LEVEL_ADMIN);
+                //$zk->setUser(1, '1', 'User1', '', ZK\Util::LEVEL_USER);
+                //$zk->setUser(2, '2', 'User2', '', ZK\Util::LEVEL_USER);
+                //$zk->setUser(3, '3', 'User3', '', ZK\Util::LEVEL_USER);
+                //$zk->setUser(5, '5', 'Admin', '1234', ZK\Util::LEVEL_ADMIN);
                 $users = $zk->getUser();
                 sleep(1);
                 foreach ($users as $uItem) {
-                    $names[$uItem['uid']] = $uItem['name'];
-
                     switch ($uItem['role']) {
-                        case ZK\Constant::LEVEL_USER:
+                        case ZK\Util::LEVEL_USER:
                             $role = 'User';
                             break;
-                        case ZK\Constant::LEVEL_ADMIN:
+                        case ZK\Util::LEVEL_ADMIN:
                             $role = 'Admin';
                             break;
                         default:
@@ -87,12 +83,12 @@
                     }
                     ?>
                     <tr>
-                        <td><?php echo $uItem['uid'] ?></td>
-                        <td><?php echo $uItem['userid'] ?></td>
-                        <td><?php echo $uItem['name'] ?></td>
-                        <td><?php echo $uItem['cardno'] ?></td>
-                        <td><?php echo $role ?></td>
-                        <td><?php echo $uItem['password'] ?>&nbsp;</td>
+                        <td><?php echo($uItem['uid']); ?></td>
+                        <td><?php echo($uItem['userid']); ?></td>
+                        <td><?php echo($uItem['name']); ?></td>
+                        <td><?php echo($uItem['cardno']); ?></td>
+                        <td><?php echo($role); ?></td>
+                        <td><?php echo($uItem['password']); ?>&nbsp;</td>
                     </tr>
                     <?php
                 }
@@ -119,19 +115,19 @@
                 <th>Time</th>
             </tr>
             <?php
-                $attendance = $zk->getAttendance();
-                $attendance = array_reverse($attendance, true);
-                sleep(1);
-                foreach ($attendance as $idx => $attItem) {
-            ?>
+            $attendance = $zk->getAttendance();
+            $attendance = array_reverse($attendance, true);
+            sleep(1);
+            foreach ($attendance as $idx => $attItem) {
+                ?>
                 <tr>
-                    <td><?php echo($idx + 1) ?></td>
-                    <td><?php echo $attItem['uid'] ?></td>
-                    <td><?php echo $attItem['id'] ?></td>
-                    <td><?php echo isset($names[$attItem['uid']]) ? $names[$attItem['uid']] : $attItem['uid'] ?></td>
-                    <td><?php echo $attItem['state'] ?></td>
-                    <td><?php echo date("d-m-Y", strtotime($attItem['timestamp'])) ?></td>
-                    <td><?php echo date("H:i:s", strtotime($attItem['timestamp'])) ?></td>
+                    <td><?php echo($idx + 1); ?></td>
+                    <td><?php echo($attItem['uid']); ?></td>
+                    <td><?php echo($attItem['id']); ?></td>
+                    <td><?php echo(isset($users[$attItem['uid']]) ? $users[$attItem['uid']]['name'] : $attItem['uid']); ?></td>
+                    <td><?php echo($attItem['state']); ?></td>
+                    <td><?php echo(date("d-m-Y", strtotime($attItem['timestamp']))); ?></td>
+                    <td><?php echo(date("H:i:s", strtotime($attItem['timestamp']))); ?></td>
                 </tr>
             <?php } ?>
         </table>
@@ -143,8 +139,8 @@
 
         $zk->enableDevice();
         sleep(1);
-        $zk->disconnect();
-    endif
+    }
+    $zk->disconnect();
 ?>
 </body>
 </html>

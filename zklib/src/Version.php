@@ -12,7 +12,7 @@ class Version
      */
     public function get(ZKLib $self)
     {
-        $command = Constant::CMD_VERSION;
+        $command = Util::CMD_VERSION;
         $command_string = '';
 
         return $self->_command($command, $command_string);

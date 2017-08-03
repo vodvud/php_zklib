@@ -4,7 +4,7 @@ namespace ZK;
 
 use ZKLib;
 
-class Constant
+class Util
 {
     const USHRT_MAX = 65535;
 
@@ -49,7 +49,7 @@ class Constant
      * @param string $t Format: "Y-m-d H:i:s"
      * @return int
      */
-    static public function encode_time($t)
+    static public function encodeTime($t)
     {
         $timestamp = strtotime($t);
         $t = (object)[
@@ -74,7 +74,7 @@ class Constant
      * @param int|string $t
      * @return false|string Format: "Y-m-d H:i:s"
      */
-    static public function decode_time($t)
+    static public function decodeTime($t)
     {
         $second = $t % 60;
         $t = $t / 60;
@@ -133,6 +133,105 @@ class Constant
             $u = unpack('H2h1/H2h2/H2h3/H2h4', substr($self->_data_recv, 8, 4));
             $size = hexdec($u['h4'] . $u['h3'] . $u['h2'] . $u['h1']);
             return $size;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * This function calculates the chksum of the packet to be sent to the
+     * time clock
+     * Copied from zkemsdk.c
+     *
+     * @inheritdoc
+     */
+    static public function createChkSum($p)
+    {
+        $l = count($p);
+        $chksum = 0;
+        $i = $l;
+        $j = 1;
+        while ($i > 1) {
+            $u = unpack('S', pack('C2', $p['c' . $j], $p['c' . ($j + 1)]));
+
+            $chksum += $u[1];
+
+            if ($chksum > self::USHRT_MAX) {
+                $chksum -= self::USHRT_MAX;
+            }
+            $i -= 2;
+            $j += 2;
+        }
+
+        if ($i) {
+            $chksum = $chksum + $p['c' . strval(count($p))];
+        }
+
+        while ($chksum > self::USHRT_MAX) {
+            $chksum -= self::USHRT_MAX;
+        }
+
+        if ($chksum > 0) {
+            $chksum = -($chksum);
+        } else {
+            $chksum = abs($chksum);
+        }
+
+        $chksum -= 1;
+        while ($chksum < 0) {
+            $chksum += self::USHRT_MAX;
+        }
+
+        return pack('S', $chksum);
+    }
+
+    /**
+     * This function puts a the parts that make up a packet together and
+     * packs them into a byte string
+     *
+     * @inheritdoc
+     */
+    static public function createHeader($command, $chksum, $session_id, $reply_id, $command_string)
+    {
+        $buf = pack('SSSS', $command, $chksum, $session_id, $reply_id) . $command_string;
+
+        $buf = unpack('C' . (8 + strlen($command_string)) . 'c', $buf);
+
+        $u = unpack('S', self::createChkSum($buf));
+
+        if (is_array($u)) {
+            while (list($key) = each($u)) {
+                $u = $u[$key];
+                break;
+            }
+        }
+        $chksum = $u;
+
+        $reply_id += 1;
+
+        if ($reply_id >= self::USHRT_MAX) {
+            $reply_id -= self::USHRT_MAX;
+        }
+
+        $buf = pack('SSSS', $command, $chksum, $session_id, $reply_id);
+
+        return $buf . $command_string;
+
+    }
+
+    /**
+     * Checks a returned packet to see if it returned Util::CMD_ACK_OK,
+     * indicating success
+     *
+     * @inheritdoc
+     */
+    static public function checkValid($reply)
+    {
+        $u = unpack('H2h1/H2h2', substr($reply, 0, 8));
+
+        $command = hexdec($u['h2'] . $u['h1']);
+        if ($command == self::CMD_ACK_OK) {
+            return true;
         } else {
             return false;
         }

@@ -12,7 +12,7 @@ class Platform
      */
     public function get(ZKLib $self)
     {
-        $command = Constant::CMD_DEVICE;
+        $command = Util::CMD_DEVICE;
         $command_string = '~Platform';
 
         return $self->_command($command, $command_string);
@@ -24,7 +24,7 @@ class Platform
      */
     public function getVersion(ZKLib $self)
     {
-        $command = Constant::CMD_DEVICE;
+        $command = Util::CMD_DEVICE;
         $command_string = '~ZKFPVersion';
 
         return $self->_command($command, $command_string);
