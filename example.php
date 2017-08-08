@@ -106,7 +106,6 @@
                 <th colspan="7">Data Attendance</th>
             </tr>
             <tr>
-                <th>Index</th>
                 <th>UID</th>
                 <th>ID</th>
                 <th>Name</th>
@@ -121,10 +120,9 @@
             foreach ($attendance as $idx => $attItem) {
                 ?>
                 <tr>
-                    <td><?php echo($idx + 1); ?></td>
                     <td><?php echo($attItem['uid']); ?></td>
                     <td><?php echo($attItem['id']); ?></td>
-                    <td><?php echo(isset($users[$attItem['uid']]) ? $users[$attItem['uid']]['name'] : $attItem['uid']); ?></td>
+                    <td><?php echo(isset($users[$attItem['id']]) ? $users[$attItem['id']]['name'] : $attItem['id']); ?></td>
                     <td><?php echo($attItem['state']); ?></td>
                     <td><?php echo(date("d-m-Y", strtotime($attItem['timestamp']))); ?></td>
                     <td><?php echo(date("H:i:s", strtotime($attItem['timestamp']))); ?></td>
