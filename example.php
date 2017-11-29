@@ -5,6 +5,10 @@
 
 <body>
 <?php
+    $enableGetDeviceInfo = true;
+    $enableGetUsers = true;
+    $enableGetData = true;
+
     include('zklib/ZKLib.php');
 
     $zk = new ZKLib(
@@ -17,6 +21,7 @@
         $zk->disableDevice();
         sleep(1);
         ?>
+        <?php if($enableGetDeviceInfo === true) { ?>
         <table border="1" cellpadding="5" cellspacing="2">
             <tr>
                 <td><b>Status</b></td>
@@ -49,7 +54,9 @@
                 <td><?php echo($zk->getTime()); ?></td>
             </tr>
         </table>
+        <?php } ?>
         <hr/>
+        <?php if($enableGetUsers === true) { ?>
         <table border="1" cellpadding="5" cellspacing="2" style="float: left; margin-right: 10px;">
             <tr>
                 <th colspan="6">Data User</th>
@@ -100,7 +107,8 @@
             //$zk->clearUser();
             ?>
         </table>
-
+        <?php } ?>
+        <?php if($enableGetData === true) { ?>
         <table border="1" cellpadding="5" cellspacing="2">
             <tr>
                 <th colspan="7">Data Attendance</th>
@@ -129,6 +137,7 @@
                 </tr>
             <?php } ?>
         </table>
+        <?php } ?>
         <?php
         //$zk->clearAttendance();
         //sleep(1);

@@ -88,7 +88,7 @@ class User
                 $cardno = str_pad($cardno, 11, '0', STR_PAD_LEFT);
 
                 if ($name == '') {
-                    $name = $uid;
+                    $name = $userid;
                 }
 
                 $users[$uid] = [
