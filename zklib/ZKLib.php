@@ -228,9 +228,9 @@ class ZKLib
      * Set user data
      *
      * @param int $uid Unique ID
-     * @param string $userid ID in DB (same like $uid)
-     * @param string $name
-     * @param string $password
+     * @param string $userid ID in DB (same like $uid, max length = 9)
+     * @param string $name (max length = 24)
+     * @param string $password (max length = 8)
      * @param int $role Default Util::LEVEL_USER
      * @return bool|mixed
      */
@@ -240,11 +240,11 @@ class ZKLib
     }
 
     /**
-     * Remove users
+     * Remove All users
      *
      * @return bool|mixed
      */
-    public function clearUser()
+    public function clearUsers()
     {
         return (new ZK\User())->clear($this);
     }
@@ -257,6 +257,17 @@ class ZKLib
     public function clearAdmin()
     {
         return (new ZK\User())->clearAdmin($this);
+    }
+
+    /**
+     * Remove user by UID
+     *
+     * @param integer $uid
+     * @return bool|mixed
+     */
+    public function removeUser($uid)
+    {
+        return (new ZK\User())->remove($this, $uid);
     }
 
     /**

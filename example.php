@@ -104,7 +104,7 @@
                 header('HTTP', true, 500); // 500 internal server error
             }
             //$zk->clearAdmin();
-            //$zk->clearUser();
+            //$zk->clearUsers();
             ?>
         </table>
         <?php } ?>
@@ -124,14 +124,25 @@
             <?php
             $attendance = $zk->getAttendance();
             $attendance = array_reverse($attendance, true);
+            //var_dump($attendance);
             sleep(1);
             foreach ($attendance as $idx => $attItem) {
+                switch ($attItem['state']) {
+                    case ZK\Util::ATT_STATE_FINGERPRINT:
+                        $state = 'Fingerprint';
+                        break;
+                    case ZK\Util::ATT_STATE_PASSWORD:
+                        $state = 'Password';
+                        break;
+                    default:
+                        $state = 'Unknown';
+                }
                 ?>
                 <tr>
                     <td><?php echo($attItem['uid']); ?></td>
                     <td><?php echo($attItem['id']); ?></td>
                     <td><?php echo(isset($users[$attItem['id']]) ? $users[$attItem['id']]['name'] : $attItem['id']); ?></td>
-                    <td><?php echo($attItem['state']); ?></td>
+                    <td><?php echo($state); ?></td>
                     <td><?php echo(date("d-m-Y", strtotime($attItem['timestamp']))); ?></td>
                     <td><?php echo(date("H:i:s", strtotime($attItem['timestamp']))); ?></td>
                 </tr>
@@ -142,7 +153,7 @@
         //$zk->clearAttendance();
         //sleep(1);
 
-        //$zk->setTime(date('Y-m-d H:i:s'));
+        $zk->setTime(date('Y-m-d H:i:s'));
 
         $zk->enableDevice();
         sleep(1);

@@ -8,39 +8,51 @@ class Util
 {
     const USHRT_MAX = 65535;
 
-    const CMD_CONNECT = 1000;
-    const CMD_EXIT = 1001;
-    const CMD_ENABLE_DEVICE = 1002;
-    const CMD_DISABLE_DEVICE = 1003;
+    const CMD_CONNECT = 1000; # Connections requests
+    const CMD_EXIT = 1001; # Disconnection requests
+    const CMD_ENABLE_DEVICE = 1002; # Ensure the machine to be at the normal work condition
+    const CMD_DISABLE_DEVICE = 1003; # Make the machine to be at the shut-down condition, generally demonstrates ‘in the work ...’on LCD
 
-    const CMD_ACK_OK = 2000;
-    const CMD_ACK_ERROR = 2001;
-    const CMD_ACK_DATA = 2002;
+    const CMD_ACK_OK = 2000; # Return value for order perform successfully
+    const CMD_ACK_ERROR = 2001; # Return value for order perform failed
+    const CMD_ACK_DATA = 2002; # Return data
 
-    const CMD_PREPARE_DATA = 1500;
-    const CMD_DATA = 1501;
+    const CMD_PREPARE_DATA = 1500; # Prepares to transmit the data
+    const CMD_DATA = 1501; # Transmit a data packet
 
-    const CMD_USER_TEMP_RRQ = 9;
-    const CMD_ATT_LOG_RRQ = 13;
-    const CMD_CLEAR_DATA = 14;
-    const CMD_CLEAR_ATT_LOG = 15;
+    const CMD_USER_TEMP_RRQ = 9; # Read some fingerprint template or some kind of data entirely
+    const CMD_ATT_LOG_RRQ = 13; # Read all attendance record
+    const CMD_CLEAR_DATA = 14; # Clear Data
+    const CMD_CLEAR_ATT_LOG = 15; # Clear attendance records
 
-    const CMD_WRITE_LCD = 66;
+    const CMD_GET_TIME = 201; # Obtain the machine time
+    const CMD_SET_TIME = 202; # Set machines time
 
-    const CMD_GET_TIME = 201;
-    const CMD_SET_TIME = 202;
+    const CMD_VERSION = 1100; # Obtain the firmware edition
+    const CMD_DEVICE = 11; # Read in the machine some configuration parameter
 
-    const CMD_VERSION = 1100;
-    const CMD_DEVICE = 11;
-
-    const CMD_CLEAR_ADMIN = 20;
-    const CMD_SET_USER = 8;
+    const CMD_SET_USER = 8; # Upload the user information (from PC to terminal).
+    const CMD_USER_TEMP_WRQ = 10; # Upload some fingerprint template
+    const CMD_DELETE_USER = 18; # Delete some user
+    const CMD_DELETE_USER_TEMP = 19; # Delete some fingerprint template
+    const CMD_CLEAR_ADMIN = 20; # Cancel the manager
 
     const LEVEL_USER = 0;
     const LEVEL_ADMIN = 14;
 
+    const FCT_ATTLOG = 1;
+    const FCT_WORKCODE = 8;
+    const FCT_FINGERTMP = 2;
+    const FCT_OPLOG = 4;
+    const FCT_USER = 5;
+    const FCT_SMS = 6;
+    const FCT_UDATA = 7;
+
     const COMMAND_TYPE_GENERAL = 'general';
     const COMMAND_TYPE_DATA = 'data';
+
+    const ATT_STATE_FINGERPRINT = 1;
+    const ATT_STATE_PASSWORD = 0;
 
     /**
      * Encode a timestamp send at the timeclock

@@ -9,19 +9,31 @@ class User
     /**
      * @param ZKLib $self
      * @param int $uid
-     * @param string $userid
-     * @param string $name
-     * @param string $password
+     * @param string $userid (max length = 9)
+     * @param string $name (max length = 24)
+     * @param string $password (max length = 8)
      * @param int $role Default Util::LEVEL_USER
      * @return bool|mixed
      */
     public function set(ZKLib $self, $uid, $userid, $name, $password, $role = Util::LEVEL_USER)
     {
+        if (empty($uid) || strlen($userid) > 9 || strlen($name) > 24 || strlen($password) > 8) {
+            return false;
+        }
+
         $command = Util::CMD_SET_USER;
         $byte1 = chr((int)($uid % 256));
         $byte2 = chr((int)($uid >> 8));
-        $command_string = $byte1 . $byte2 . chr($role) . str_pad($password, 8, chr(0)) . str_pad($name, 28, chr(0))
-            . str_pad(chr(1), 9, chr(0)) . str_pad($userid, 8, chr(0)) . str_repeat(chr(0), 16);
+        $command_string = implode('', [
+            $byte1,
+            $byte2,
+            chr($role),
+            str_pad($password, 8, chr(0)),
+            str_pad($name, 28, chr(0)),
+            str_pad(chr(1), 9, chr(0)),
+            str_pad($userid, 9, chr(0)),
+            str_repeat(chr(0), 15)
+        ]);
 
         return $self->_command($command, $command_string);
     }
@@ -33,7 +45,7 @@ class User
     public function get(ZKLib $self)
     {
         $command = Util::CMD_USER_TEMP_RRQ;
-        $command_string = chr(5);
+        $command_string = chr(Util::FCT_USER);
 
         $session_id = $self->_command($command, $command_string, Util::COMMAND_TYPE_DATA);
 
@@ -91,7 +103,7 @@ class User
                     $name = $userid;
                 }
 
-                $users[$uid] = [
+                $users[$userid] = [
                     'userid' => $userid,
                     'name' => $name,
                     'cardno' => $cardno,
@@ -127,6 +139,21 @@ class User
     {
         $command = Util::CMD_CLEAR_ADMIN;
         $command_string = '';
+
+        return $self->_command($command, $command_string);
+    }
+
+    /**
+     * @param ZKLib $self
+     * @param integer $uid
+     * @return bool|mixed
+     */
+    public function remove(ZKLib $self, $uid)
+    {
+        $command = Util::CMD_DELETE_USER;
+        $byte1 = chr((int)($uid % 256));
+        $byte2 = chr((int)($uid >> 8));
+        $command_string = ($byte1 . $byte2);
 
         return $self->_command($command, $command_string);
     }
