@@ -248,4 +248,46 @@ class Util
             return false;
         }
     }
+
+    /**
+     * Get User Role string
+     * @param integer $role
+     * @return string
+     */
+    static public function getUserRole($role)
+    {
+        switch ($role) {
+            case self::LEVEL_USER:
+                $ret = 'User';
+                break;
+            case self::LEVEL_ADMIN:
+                $ret = 'Admin';
+                break;
+            default:
+                $ret = 'Unknown';
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Get Attendance State string
+     * @param integer $state
+     * @return string
+     */
+    static public function getAttState($state)
+    {
+        switch ($state) {
+            case self::ATT_STATE_FINGERPRINT:
+                $ret = 'Fingerprint';
+                break;
+            case self::ATT_STATE_PASSWORD:
+                $ret = 'Password';
+                break;
+            default:
+                $ret = 'Unknown';
+        }
+
+        return $ret;
+    }
 }

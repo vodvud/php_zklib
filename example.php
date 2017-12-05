@@ -78,23 +78,13 @@
                 $users = $zk->getUser();
                 sleep(1);
                 foreach ($users as $uItem) {
-                    switch ($uItem['role']) {
-                        case ZK\Util::LEVEL_USER:
-                            $role = 'User';
-                            break;
-                        case ZK\Util::LEVEL_ADMIN:
-                            $role = 'Admin';
-                            break;
-                        default:
-                            $role = 'Unknown';
-                    }
                     ?>
                     <tr>
                         <td><?php echo($uItem['uid']); ?></td>
                         <td><?php echo($uItem['userid']); ?></td>
                         <td><?php echo($uItem['name']); ?></td>
                         <td><?php echo($uItem['cardno']); ?></td>
-                        <td><?php echo($role); ?></td>
+                        <td><?php echo(ZK\Util::getUserRole($uItem['role'])); ?></td>
                         <td><?php echo($uItem['password']); ?>&nbsp;</td>
                     </tr>
                     <?php
@@ -127,23 +117,13 @@
             $attendance = array_reverse($attendance, true);
             //var_dump($attendance);
             sleep(1);
-            foreach ($attendance as $idx => $attItem) {
-                switch ($attItem['state']) {
-                    case ZK\Util::ATT_STATE_FINGERPRINT:
-                        $state = 'Fingerprint';
-                        break;
-                    case ZK\Util::ATT_STATE_PASSWORD:
-                        $state = 'Password';
-                        break;
-                    default:
-                        $state = 'Unknown';
-                }
+            foreach ($attendance as $attItem) {
                 ?>
                 <tr>
                     <td><?php echo($attItem['uid']); ?></td>
                     <td><?php echo($attItem['id']); ?></td>
                     <td><?php echo(isset($users[$attItem['id']]) ? $users[$attItem['id']]['name'] : $attItem['id']); ?></td>
-                    <td><?php echo($state); ?></td>
+                    <td><?php echo(ZK\Util::getAttState($attItem['state'])); ?></td>
                     <td><?php echo(date("d-m-Y", strtotime($attItem['timestamp']))); ?></td>
                     <td><?php echo(date("H:i:s", strtotime($attItem['timestamp']))); ?></td>
                 </tr>
