@@ -227,7 +227,7 @@ class ZKLib
     /**
      * Set user data
      *
-     * @param int $uid Unique ID
+     * @param int $uid Unique ID (max 65535)
      * @param string $userid ID in DB (same like $uid, max length = 9)
      * @param string $name (max length = 24)
      * @param string $password (max length = 8)

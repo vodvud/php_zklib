@@ -8,7 +8,7 @@ class User
 {
     /**
      * @param ZKLib $self
-     * @param int $uid
+     * @param int $uid Unique ID (max 65535)
      * @param string $userid (max length = 9)
      * @param string $name (max length = 24)
      * @param string $password (max length = 8)
@@ -17,7 +17,13 @@ class User
      */
     public function set(ZKLib $self, $uid, $userid, $name, $password, $role = Util::LEVEL_USER)
     {
-        if (empty($uid) || strlen($userid) > 9 || strlen($name) > 24 || strlen($password) > 8) {
+        if (
+            (int)$uid === 0 ||
+            (int)$uid > Util::USHRT_MAX ||
+            strlen($userid) > 9 ||
+            strlen($name) > 24 ||
+            strlen($password) > 8
+        ) {
             return false;
         }
 
@@ -85,7 +91,7 @@ class User
                 $u2 = hexdec(substr($u[1], 4, 2));
                 $uid = $u1 + ($u2 * 256);
                 $cardno = hexdec(substr($u[1], 78, 2) . substr($u[1], 76, 2) . substr($u[1], 74, 2) . substr($u[1], 72, 2)) . ' ';
-                $role = hexdec(substr($u[1], 4, 4)) . ' ';
+                $role = hexdec(substr($u[1], 6, 2)) . ' ';
                 $password = hex2bin(substr($u[1], 8, 16)) . ' ';
                 $name = hex2bin(substr($u[1], 24, 74)) . ' ';
                 $userid = hex2bin(substr($u[1], 98, 72)) . ' ';

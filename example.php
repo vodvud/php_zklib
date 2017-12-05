@@ -105,6 +105,7 @@
             }
             //$zk->clearAdmin();
             //$zk->clearUsers();
+            //$zk->removeUser(1);
             ?>
         </table>
         <?php } ?>
