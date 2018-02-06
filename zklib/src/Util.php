@@ -298,7 +298,7 @@ class Util
      * @param int $maxErrors
      * @return string
      */
-    static public function recData(ZKLib $self, $maxErrors = 100)
+    static public function recData(ZKLib $self, $maxErrors = 20)
     {
         $data = '';
 
@@ -308,13 +308,13 @@ class Util
             $first = true;
 
             while ($bytes > $received) {
-                $ret = socket_recvfrom($self->_zkclient, $dataRec, 1032, MSG_WAITALL, $self->_ip, $self->_port);
+                $ret = @socket_recvfrom($self->_zkclient, $dataRec, 1032, 0, $self->_ip, $self->_port);
 
                 if ($ret === false) {
-                    $errors++;
                     if ($errors < $maxErrors) {
                         //try again if false
-                        sleep(1);
+                        $errors++;
+                        sleep(10);
                         continue;
                     } else {
                         self::logger($self, 'Received: ' . $received . ' of ' . $bytes . ' bytes');
@@ -323,19 +323,19 @@ class Util
                     }
                 }
 
+                // reset error counter
+                $errors = 0;
+
                 if ($first === false) {
                     //The first 4 bytes don't seem to be related to the user
-                    $data .= substr($dataRec, 8);
-                } else {
-                    $data .= $dataRec;
+                    $dataRec = substr($dataRec, 8);
                 }
 
+                $data .= $dataRec;
                 $received += strlen($dataRec);
 
                 unset($dataRec);
                 $first = false;
-
-                usleep(50000); //timeout
             }
         }
 
