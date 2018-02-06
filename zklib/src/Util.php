@@ -314,7 +314,7 @@ class Util
                     if ($errors < $maxErrors) {
                         //try again if false
                         $errors++;
-                        sleep(10);
+                        sleep(1);
                         continue;
                     } else {
                         self::logger($self, 'Received: ' . $received . ' of ' . $bytes . ' bytes');
