@@ -12,6 +12,8 @@ class Platform
      */
     public function get(ZKLib $self)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_DEVICE;
         $command_string = '~Platform';
 
@@ -24,6 +26,8 @@ class Platform
      */
     public function getVersion(ZKLib $self)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_DEVICE;
         $command_string = '~ZKFPVersion';
 

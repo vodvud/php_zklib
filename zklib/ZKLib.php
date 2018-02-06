@@ -11,8 +11,7 @@ class ZKLib
 
     public $_data_recv = '';
     public $_session_id = 0;
-    public $_user_data = [];
-    public $_attendance_data = [];
+    public $_section = '';
 
     /**
      * ZKLib constructor.

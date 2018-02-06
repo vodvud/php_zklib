@@ -12,6 +12,8 @@ class Ssr
      */
     public function get(ZKLib $self)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_DEVICE;
         $command_string = '~SSR';
 

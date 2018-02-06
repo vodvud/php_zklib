@@ -12,6 +12,8 @@ class Version
      */
     public function get(ZKLib $self)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_VERSION;
         $command_string = '';
 

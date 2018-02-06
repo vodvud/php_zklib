@@ -12,6 +12,8 @@ class Pin
      */
     public function width(ZKLib $self)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_DEVICE;
         $command_string = '~PIN2Width';
 

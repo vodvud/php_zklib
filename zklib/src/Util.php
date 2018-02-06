@@ -19,6 +19,7 @@ class Util
 
     const CMD_PREPARE_DATA = 1500; # Prepares to transmit the data
     const CMD_DATA = 1501; # Transmit a data packet
+    const CMD_FREE_DATA = 1502; # Clear machines open buffer
 
     const CMD_USER_TEMP_RRQ = 9; # Read some fingerprint template or some kind of data entirely
     const CMD_ATT_LOG_RRQ = 13; # Read all attendance record
@@ -289,5 +290,73 @@ class Util
         }
 
         return $ret;
+    }
+
+    /**
+     * Receive data from device
+     * @param ZKLib $self
+     * @param int $maxErrors
+     * @return string
+     */
+    static public function recData(ZKLib $self, $maxErrors = 100)
+    {
+        $data = '';
+
+        if ($bytes = self::getSize($self)) {
+            $received = 0;
+            $errors = 0;
+            $first = true;
+
+            while ($bytes > $received) {
+                $ret = socket_recvfrom($self->_zkclient, $dataRec, 1032, MSG_WAITALL, $self->_ip, $self->_port);
+
+                if ($ret === false) {
+                    $errors++;
+                    if ($errors < $maxErrors) {
+                        //try again if false
+                        sleep(1);
+                        continue;
+                    } else {
+                        self::logger($self, 'Received: ' . $received . ' of ' . $bytes . ' bytes');
+                        unset($data);
+                        return '';
+                    }
+                }
+
+                if ($first === false) {
+                    //The first 4 bytes don't seem to be related to the user
+                    $data .= substr($dataRec, 8);
+                } else {
+                    $data .= $dataRec;
+                }
+
+                $received += strlen($dataRec);
+
+                unset($dataRec);
+                $first = false;
+
+                usleep(50000); //timeout
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Write log
+     * @param ZKLib $self
+     * @param string $str
+     */
+    static public function logger(ZKLib $self, $str)
+    {
+        $dir = dirname(dirname(__FILE__));
+        $log = $dir . '/logs/error.log';
+
+        $row = '[' . date('d.m.Y H:i') . '] ';
+        $row .= (empty($self->_section) ? '' : '(' . $self->_section . ') ');
+        $row .= $str;
+        $row .= PHP_EOL;
+
+        file_put_contents($log, $row, FILE_APPEND);
     }
 }

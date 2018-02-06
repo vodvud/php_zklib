@@ -12,6 +12,8 @@ class Attendance
      */
     public function get(ZKLib $self)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_ATT_LOG_RRQ;
         $command_string = '';
 
@@ -21,27 +23,11 @@ class Attendance
             return [];
         }
 
-        if ($bytes = Util::getSize($self)) {
-            while ($bytes > 0) {
-                @socket_recvfrom($self->_zkclient, $data_recv, 1032, 0, $self->_ip, $self->_port);
-                array_push($self->_attendance_data, $data_recv);
-                $bytes -= 1024;
-            }
-
-            $self->_session_id = $session_id;
-            @socket_recvfrom($self->_zkclient, $data_recv, 1024, 0, $self->_ip, $self->_port);
-        }
+        $self->_session_id = $session_id;
+        $attData = Util::recData($self);
 
         $attendance = [];
-        if (count($self->_attendance_data) > 0) {
-            # The first 4 bytes don't seem to be related to the user
-            for ($x = 0; $x < count($self->_attendance_data); $x++) {
-                if ($x > 0) {
-                    $self->_attendance_data[$x] = substr($self->_attendance_data[$x], 8);
-                }
-            }
-
-            $attData = implode('', $self->_attendance_data);
+        if (!empty($attData)) {
             $attData = substr($attData, 10);
 
             while (strlen($attData) > 40) {
@@ -75,6 +61,8 @@ class Attendance
      */
     public function clear(ZKLib $self)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_CLEAR_ATT_LOG;
         $command_string = '';
 

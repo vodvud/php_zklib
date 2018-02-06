@@ -12,6 +12,8 @@ class Face
      */
     public function on(ZKLib $self)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_DEVICE;
         $command_string = 'FaceFunOn';
 

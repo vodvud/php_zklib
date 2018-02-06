@@ -17,6 +17,8 @@ class User
      */
     public function set(ZKLib $self, $uid, $userid, $name, $password, $role = Util::LEVEL_USER)
     {
+        $self->_section = __METHOD__;
+
         if (
             (int)$uid === 0 ||
             (int)$uid > Util::USHRT_MAX ||
@@ -50,6 +52,8 @@ class User
      */
     public function get(ZKLib $self)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_USER_TEMP_RRQ;
         $command_string = chr(Util::FCT_USER);
 
@@ -59,29 +63,11 @@ class User
             return [];
         }
 
-        if ($bytes = Util::getSize($self)) {
-            while ($bytes > 0) {
-                @socket_recvfrom($self->_zkclient, $data_recv, 1032, 0, $self->_ip, $self->_port);
-                array_push($self->_user_data, $data_recv);
-                $bytes -= 1024;
-            }
-
-            $self->_session_id = $session_id;
-            @socket_recvfrom($self->_zkclient, $data_recv, 1024, 0, $self->_ip, $self->_port);
-        }
-
+        $self->_session_id = $session_id;
+        $userData = Util::recData($self);
 
         $users = [];
-        if (count($self->_user_data) > 0) {
-            //The first 4 bytes don't seem to be related to the user
-            for ($x = 0; $x < count($self->_user_data); $x++) {
-                if ($x > 0) {
-                    $self->_user_data[$x] = substr($self->_user_data[$x], 8);
-                }
-            }
-
-            $userData = implode('', $self->_user_data);
-
+        if (!empty($userData)) {
             $userData = substr($userData, 11);
 
             while (strlen($userData) > 72) {
@@ -131,6 +117,8 @@ class User
      */
     public function clear(ZKLib $self)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_CLEAR_DATA;
         $command_string = '';
 
@@ -143,6 +131,8 @@ class User
      */
     public function clearAdmin(ZKLib $self)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_CLEAR_ADMIN;
         $command_string = '';
 
@@ -156,6 +146,8 @@ class User
      */
     public function remove(ZKLib $self, $uid)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_DELETE_USER;
         $byte1 = chr((int)($uid % 256));
         $byte2 = chr((int)($uid >> 8));

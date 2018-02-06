@@ -13,6 +13,8 @@ class Time
      */
     public function set(ZKLib $self, $t)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_SET_TIME;
         $command_string = pack('I', Util::encodeTime($t));
 
@@ -25,6 +27,8 @@ class Time
      */
     public function get(ZKLib $self)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_GET_TIME;
         $command_string = '';
 

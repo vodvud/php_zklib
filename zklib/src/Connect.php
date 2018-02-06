@@ -14,6 +14,8 @@ class Connect
      */
     public function connect(ZKLib $self)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_CONNECT;
         $command_string = '';
         $chksum = 0;
@@ -47,6 +49,8 @@ class Connect
      */
     public function disconnect(ZKLib $self)
     {
+        $self->_section = __METHOD__;
+
         $command = Util::CMD_EXIT;
         $command_string = '';
         $chksum = 0;
