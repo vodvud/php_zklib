@@ -298,7 +298,7 @@ class Util
      * @param int $maxErrors
      * @return string
      */
-    static public function recData(ZKLib $self, $maxErrors = 20)
+    static public function recData(ZKLib $self, $maxErrors = 10)
     {
         $data = '';
 
