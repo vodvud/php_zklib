@@ -36,7 +36,9 @@ class Attendance
                 $u1 = hexdec(substr($u[1], 4, 2));
                 $u2 = hexdec(substr($u[1], 6, 2));
                 $uid = $u1 + ($u2 * 256);
-                $id = preg_replace('/[^\w]/', '', hex2bin(substr($u[1], 6, 20)));
+                $id = hex2bin(substr($u[1], 8, 18));
+                $id = explode(chr(0), $id, 2);
+                $id = $id[0];
                 $state = hexdec(substr($u[1], 56, 2));
                 $timestamp = Util::decodeTime(hexdec(Util::reverseHex(substr($u[1], 58, 8))));
 
