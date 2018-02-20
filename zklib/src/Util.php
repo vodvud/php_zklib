@@ -317,6 +317,7 @@ class Util
                         sleep(1);
                         continue;
                     } else {
+                        //return empty if has maximum count of errors
                         self::logReceived($self, $received, $bytes);
                         unset($data);
                         return '';
@@ -333,13 +334,6 @@ class Util
 
                 unset($dataRec);
                 $first = false;
-            }
-
-            if ($received < $bytes) {
-                //return empty if less than the full size is received
-                self::logReceived($self, $received, $bytes);
-                unset($data);
-                return '';
             }
         }
 
