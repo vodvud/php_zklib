@@ -296,16 +296,17 @@ class Util
      * Receive data from device
      * @param ZKLib $self
      * @param int $maxErrors
+     * @param bool $first if 'true' don't remove first 4 bytes for first row
      * @return string
      */
-    static public function recData(ZKLib $self, $maxErrors = 10)
+    static public function recData(ZKLib $self, $maxErrors = 10, $first = true)
     {
         $data = '';
+        $bytes = self::getSize($self);
 
-        if ($bytes = self::getSize($self)) {
+        if ($bytes) {
             $received = 0;
             $errors = 0;
-            $first = true;
 
             while ($bytes > $received) {
                 $ret = @socket_recvfrom($self->_zkclient, $dataRec, 1032, 0, $self->_ip, $self->_port);
@@ -335,6 +336,10 @@ class Util
                 unset($dataRec);
                 $first = false;
             }
+
+            //flush socket
+            @socket_recvfrom($self->_zkclient, $dataRec, 1024, 0, $self->_ip, $self->_port);
+            unset($dataRec);
         }
 
         return $data;

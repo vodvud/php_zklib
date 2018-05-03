@@ -239,6 +239,40 @@ class ZKLib
     }
 
     /**
+     * Get fingerprint data array by UID
+     *
+     * @param integer $uid Unique ID (max 65535)
+     * @return array Binary fingerprint data array
+     */
+    public function getFingerprint($uid)
+    {
+        return (new ZK\Fingerprint())->get($this, $uid);
+    }
+
+    /**
+     * Set fingerprint data array
+     *
+     * @param array $data Binary fingerprint data array
+     * @return bool
+     */
+    public function setFingerprint(array $data)
+    {
+        return (new ZK\Fingerprint())->set($this, $data);
+    }
+
+    /**
+     * Remove fingerprint by UID and fingers ID
+     *
+     * @param integer $uid Unique ID (max 65535)
+     * @param array $data Fingers ID array (0-9)
+     * @return bool
+     */
+    public function removeFingerprint($uid, array $data)
+    {
+        return (new ZK\Fingerprint())->remove($this, $uid, $data);
+    }
+
+    /**
      * Remove All users
      *
      * @return bool|mixed
