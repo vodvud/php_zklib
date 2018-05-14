@@ -69,6 +69,8 @@ class Fingerprint
     }
 
     /**
+     * TODO: Still return false. I need more documentation about it, or play with data and try.
+     *
      * @param ZKLib $self
      * @param array $data Binary fingerprint data array (same like returned array from 'get' method)
      * @return bool
