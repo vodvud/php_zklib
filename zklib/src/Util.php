@@ -16,6 +16,7 @@ class Util
     const CMD_ACK_OK = 2000; # Return value for order perform successfully
     const CMD_ACK_ERROR = 2001; # Return value for order perform failed
     const CMD_ACK_DATA = 2002; # Return data
+    const CMD_ACK_UNAUTH = 2005; # Connection unauthorized
 
     const CMD_PREPARE_DATA = 1500; # Prepares to transmit the data
     const CMD_DATA = 1501; # Transmit a data packet
@@ -243,7 +244,8 @@ class Util
         $u = unpack('H2h1/H2h2', substr($reply, 0, 8));
 
         $command = hexdec($u['h2'] . $u['h1']);
-        if ($command == self::CMD_ACK_OK) {
+        /** TODO: Some device can return 'Connection unauthorized' then should check also */
+        if ($command == self::CMD_ACK_OK || $command == self::CMD_ACK_UNAUTH) {
             return true;
         } else {
             return false;
