@@ -227,9 +227,9 @@ class ZKLib
      * Set user data
      *
      * @param int $uid Unique ID (max 65535)
-     * @param string $userid ID in DB (same like $uid, max length = 9)
+     * @param int|string $userid ID in DB (same like $uid, max length = 9, only numbers - depends device setting)
      * @param string $name (max length = 24)
-     * @param string $password (max length = 8)
+     * @param int|string $password (max length = 8, only numbers - depends device setting)
      * @param int $role Default Util::LEVEL_USER
      * @return bool|mixed
      */
