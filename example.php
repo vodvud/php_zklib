@@ -138,11 +138,8 @@
             ?>
         <?php } ?>
         <?php
-        if ($enableGetData === false || !empty($attendance)) {
-            // If $zk->getAttendance() returned empty array then device disconnected already
-            $zk->enableDevice();
-            $zk->disconnect();
-        }
+        $zk->enableDevice();
+        $zk->disconnect();
     }
 ?>
 </body>
