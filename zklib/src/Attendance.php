@@ -17,13 +17,11 @@ class Attendance
         $command = Util::CMD_ATT_LOG_RRQ;
         $command_string = '';
 
-        $session_id = $self->_command($command, $command_string, Util::COMMAND_TYPE_DATA);
-
-        if ($session_id === false) {
+        $session = $self->_command($command, $command_string, Util::COMMAND_TYPE_DATA);
+        if ($session === false) {
             return [];
         }
 
-        $self->_session_id = $session_id;
         $attData = Util::recData($self);
 
         $attendance = [];

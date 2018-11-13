@@ -57,13 +57,11 @@ class User
         $command = Util::CMD_USER_TEMP_RRQ;
         $command_string = chr(Util::FCT_USER);
 
-        $session_id = $self->_command($command, $command_string, Util::COMMAND_TYPE_DATA);
-
-        if ($session_id === false) {
+        $session = $self->_command($command, $command_string, Util::COMMAND_TYPE_DATA);
+        if ($session === false) {
             return [];
         }
 
-        $self->_session_id = $session_id;
         $userData = Util::recData($self);
 
         $users = [];

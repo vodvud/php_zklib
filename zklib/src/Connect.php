@@ -31,7 +31,12 @@ class Connect
             if (strlen($self->_data_recv) > 0) {
                 $u = unpack('H2h1/H2h2/H2h3/H2h4/H2h5/H2h6', substr($self->_data_recv, 0, 8));
 
-                $self->_session_id = hexdec($u['h6'] . $u['h5']);
+                $session = hexdec($u['h6'] . $u['h5']);
+                if (empty($session)) {
+                    return false;
+                }
+
+                $self->_session_id = $session;
                 return Util::checkValid($self->_data_recv);
             } else {
                 return false;
@@ -66,6 +71,7 @@ class Connect
         try {
             @socket_recvfrom($self->_zkclient, $self->_data_recv, 1024, 0, $self->_ip, $self->_port);
 
+            $self->_session_id = 0;
             return Util::checkValid($self->_data_recv);
         } catch (ErrorException $e) {
             return false;

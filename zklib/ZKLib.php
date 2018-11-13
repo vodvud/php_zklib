@@ -55,16 +55,13 @@ class ZKLib
 
             $u = unpack('H2h1/H2h2/H2h3/H2h4/H2h5/H2h6', substr($this->_data_recv, 0, 8));
 
-            switch ($type) {
-                case Util::COMMAND_TYPE_GENERAL:
-                    $this->_session_id = hexdec($u['h6'] . $u['h5']);
-                    $ret = substr($this->_data_recv, 8);
-                    break;
-                case Util::COMMAND_TYPE_DATA:
-                    $ret = hexdec($u['h6'] . $u['h5']);
-                    break;
-                default:
-                    $ret = false;
+            $ret = false;
+            $session = hexdec($u['h6'] . $u['h5']);
+
+            if ($type === Util::COMMAND_TYPE_GENERAL && $session_id === $session) {
+                $ret = substr($this->_data_recv, 8);
+            } else if ($type === Util::COMMAND_TYPE_DATA && !empty($session)) {
+                $ret = $session;
             }
 
             return $ret;

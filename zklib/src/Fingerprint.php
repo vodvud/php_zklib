@@ -46,13 +46,11 @@ class Fingerprint
             'tpl' => ''
         ];
 
-        $session_id = $self->_command($command, $command_string, Util::COMMAND_TYPE_DATA);
-
-        if ($session_id === false) {
+        $session = $self->_command($command, $command_string, Util::COMMAND_TYPE_DATA);
+        if ($session === false) {
             return $ret;
         }
 
-        $self->_session_id = $session_id;
         $data = Util::recData($self, 10, false);
 
         if (!empty($data)) {
