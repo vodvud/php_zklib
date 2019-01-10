@@ -4,9 +4,14 @@ namespace ZK;
 
 use ZKLib;
 
+/**
+ * TODO: Uncompleted class, need more documentation about it...
+ */
 class Fingerprint
 {
     /**
+     * TODO: Can get data, but don't know how to parse the data. Need more documentation about it...
+     *
      * @param ZKLib $self
      * @param integer $uid Unique Employee ID in ZK device
      * @return array Binary fingerprint data array
@@ -67,7 +72,7 @@ class Fingerprint
     }
 
     /**
-     * TODO: Still return false. I need more documentation about it, or play with data and try.
+     * TODO: Still return false. Need more documentation about it...
      *
      * @param ZKLib $self
      * @param array $data Binary fingerprint data array (same like returned array from 'get' method)
@@ -105,6 +110,8 @@ class Fingerprint
     }
 
     /**
+     * TODO: Still can be removed one by one per query, but not all. Need more documentation about it...
+     *
      * @param ZKLib $self
      * @param int $uid Unique Employee ID in ZK device
      * @param array $data Fingers ID array (0-9)
