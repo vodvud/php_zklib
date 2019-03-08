@@ -214,10 +214,7 @@ class Util
         $u = unpack('S', self::createChkSum($buf));
 
         if (is_array($u)) {
-            while (list($key) = each($u)) {
-                $u = $u[$key];
-                break;
-            }
+            $u = reset($u);
         }
         $chksum = $u;
 
