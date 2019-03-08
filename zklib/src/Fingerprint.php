@@ -4,17 +4,12 @@ namespace ZK;
 
 use ZKLib;
 
-/**
- * TODO: Uncompleted class, need more documentation about it...
- */
 class Fingerprint
 {
     /**
-     * TODO: Can get data, but don't know how to parse the data. Need more documentation about it...
-     *
      * @param ZKLib $self
      * @param integer $uid Unique Employee ID in ZK device
-     * @return array Binary fingerprint data array
+     * @return array Binary fingerprint data array (where key is finger ID (0-9))
      */
     public function get(ZKLib $self, $uid)
     {
@@ -39,7 +34,7 @@ class Fingerprint
      * @param integer $finger Finger ID (0-9)
      * @return array
      */
-    public function _getFinger(ZKLib $self, $uid, $finger)
+    private function _getFinger(ZKLib $self, $uid, $finger)
     {
         $command = Util::CMD_USER_TEMP_RRQ;
         $byte1 = chr((int)($uid % 256));
@@ -72,79 +67,94 @@ class Fingerprint
     }
 
     /**
-     * TODO: Still return false. Need more documentation about it...
+     * TODO: Still can not set fingerprint. Need more documentation about it...
      *
      * @param ZKLib $self
-     * @param array $data Binary fingerprint data array (same like returned array from 'get' method)
-     * @return bool
+     * @param int $uid Unique Employee ID in ZK device
+     * @param array $data Binary fingerprint data array (where key is finger ID (0-9) same like returned array from 'get' method)
+     * @return int Count of added fingerprints
      */
-    public function set(ZKLib $self, array $data)
+    public function set(ZKLib $self, $uid, array $data)
     {
         $self->_section = __METHOD__;
 
-        try {
-            foreach ($data as $item) {
-                if ($this->_setFinger($self, $item) === false) {
-                    return false;
-                }
+
+        $count = 0;
+        foreach ($data as $finger => $item) {
+            $allowSet = true;
+            if ($this->_checkFinger($self, $uid, $finger) === true) {
+                $allowSet = $this->_removeFinger($self, $uid, $finger);
             }
-            return true;
-        } catch (\ErrorException $e) {
-            return false;
-        } catch (\Exception $e) {
-            return false;
+            if ($allowSet === true && $this->_setFinger($self, $item) === true) {
+                $count++;
+            }
         }
+
+        return $count;
     }
 
     /**
      * @param ZKLib $self
-     * @param string $item Binary fingerprint data item
+     * @param string $data Binary fingerprint data item
      * @return bool|mixed
      */
-    private function _setFinger(ZKLib $self, $item)
+    private function _setFinger(ZKLib $self, $data)
     {
         $command = Util::CMD_USER_TEMP_WRQ;
-        $command_string = $item;
+        $command_string = $data;
 
         return $self->_command($command, $command_string);
     }
 
     /**
-     * TODO: Still can be removed one by one per query, but not all. Need more documentation about it...
-     *
      * @param ZKLib $self
      * @param int $uid Unique Employee ID in ZK device
      * @param array $data Fingers ID array (0-9)
-     * @return bool
+     * @return int Count of deleted fingerprints
      */
     public function remove(ZKLib $self, $uid, array $data)
     {
         $self->_section = __METHOD__;
 
-        $byte1 = chr((int)($uid % 256));
-        $byte2 = chr((int)($uid >> 8));
-
+        $count = 0;
         foreach ($data as $finger) {
-            if ($this->_removeFinger($self, $byte1, $byte2, $finger) === false) {
-                return false;
+            if ($this->_checkFinger($self, $uid, $finger) === true) {
+                if ($this->_removeFinger($self, $uid, $finger) === true) {
+                    $count++;
+                }
             }
         }
-        return true;
+
+        return $count;
     }
 
     /**
      * @param ZKLib $self
-     * @param string $byte1
-     * @param string $byte2
+     * @param int $uid Unique Employee ID in ZK device
      * @param int $finger Finger ID (0-9)
-     * @return bool|mixed
+     * @return bool
      */
-    private function _removeFinger(ZKLib $self, $byte1, $byte2, $finger)
+    private function _removeFinger(ZKLib $self, $uid, $finger)
     {
         $command = Util::CMD_DELETE_USER_TEMP;
+        $byte1 = chr((int)($uid % 256));
+        $byte2 = chr((int)($uid >> 8));
         $command_string = ($byte1 . $byte2) . chr($finger);
 
-        return $self->_command($command, $command_string);
+        $self->_command($command, $command_string);
+
+        return !($this->_checkFinger($self, $uid, $finger));
     }
 
+    /**
+     * @param ZKLib $self
+     * @param int $uid Unique Employee ID in ZK device
+     * @param int $finger Finger ID (0-9)
+     * @return bool Returned true if exist
+     */
+    private function _checkFinger(ZKLib $self, $uid, $finger)
+    {
+        $res = $this->_getFinger($self, $uid, $finger);
+        return (bool)($res['size'] > 0);
+    }
 }
