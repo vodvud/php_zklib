@@ -7,6 +7,8 @@ use ZKLib;
 class Fingerprint
 {
     /**
+     * TODO: Can get data, but don't know how to parse the data. Need more documentation about it...
+     *
      * @param ZKLib $self
      * @param integer $uid Unique Employee ID in ZK device
      * @return array Binary fingerprint data array (where key is finger ID (0-9))
@@ -54,10 +56,10 @@ class Fingerprint
         $data = Util::recData($self, 10, false);
 
         if (!empty($data)) {
-            $templateSize = strlen($data) + 6;
+            $templateSize = strlen($data);
             $prefix = chr($templateSize % 256) . chr(round($templateSize / 256)) . $byte1 . $byte2 . chr($finger) . chr(1);
             $data = $prefix . $data;
-            if (strlen($data) > 6) {
+            if (strlen($templateSize) > 0) {
                 $ret['size'] = $templateSize;
                 $ret['tpl'] = $data;
             }

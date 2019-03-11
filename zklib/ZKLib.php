@@ -237,6 +237,7 @@ class ZKLib
 
     /**
      * Get fingerprint data array by UID
+     * TODO: Can get data, but don't know how to parse the data. Need more documentation about it...
      *
      * @param integer $uid Unique ID (max 65535)
      * @return array Binary fingerprint data array (where key is finger ID (0-9))
