@@ -110,6 +110,7 @@
                     <th>State</th>
                     <th>Date</th>
                     <th>Time</th>
+                    <th>Type</th>
                 </tr>
                 <?php
                     $attendance = $zk->getAttendance();
@@ -125,6 +126,7 @@
                                 <td><?php echo(ZK\Util::getAttState($attItem['state'])); ?></td>
                                 <td><?php echo(date("d-m-Y", strtotime($attItem['timestamp']))); ?></td>
                                 <td><?php echo(date("H:i:s", strtotime($attItem['timestamp']))); ?></td>
+                                <td><?php echo(ZK\Util::getAttType($attItem['type'])); ?></td>
                             </tr>
                             <?php
                         }
