@@ -38,12 +38,14 @@ class Attendance
                 $id = str_replace(chr(0), '', $id);
                 $state = hexdec(substr($u[1], 56, 2));
                 $timestamp = Util::decodeTime(hexdec(Util::reverseHex(substr($u[1], 58, 8))));
-
+                $type = hexdec(Util::reverseHex(substr($u[1], 66, 2 )));
+				
                 $attendance[] = [
                     'uid' => $uid,
                     'id' => $id,
                     'state' => $state,
-                    'timestamp' => $timestamp
+                    'timestamp' => $timestamp,
+                    'type' => $type
                 ];
 
                 $attData = substr($attData, 40);

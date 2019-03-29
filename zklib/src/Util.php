@@ -55,6 +55,10 @@ class Util
 
     const ATT_STATE_FINGERPRINT = 1;
     const ATT_STATE_PASSWORD = 0;
+    const ATT_STATE_CARD = 2;
+    
+    const ATT_TYPE_CHECK_IN = 0;
+    const ATT_TYPE_CHECK_OUT = 1;
 
     /**
      * Encode a timestamp send at the timeclock
@@ -284,8 +288,32 @@ class Util
             case self::ATT_STATE_PASSWORD:
                 $ret = 'Password';
                 break;
+            case self::ATT_STATE_CARD:
+                $ret = 'Card';
+                break;
             default:
                 $ret = 'Unknown';
+        }
+
+        return $ret;
+    }
+    
+    /**
+     * Get Attendance Type string
+     * @param integer $type
+     * @return string
+     */
+    static public function getAttType($type)
+    {
+        switch ($type) {
+            case self::ATT_TYPE_CHECK_IN:
+                $ret = 'Check-in';
+                break;
+            case self::ATT_TYPE_CHECK_OUT:
+                $ret = 'Check-out';
+                break;
+            default:
+                $ret = 'Undefined';
         }
 
         return $ret;
