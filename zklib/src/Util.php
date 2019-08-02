@@ -59,6 +59,8 @@ class Util
     
     const ATT_TYPE_CHECK_IN = 0;
     const ATT_TYPE_CHECK_OUT = 1;
+    const ATT_TYPE_OVERTIME_IN = 4;
+    const ATT_TYPE_OVERTIME_OUT = 5;
 
     /**
      * Encode a timestamp send at the timeclock
@@ -311,6 +313,12 @@ class Util
                 break;
             case self::ATT_TYPE_CHECK_OUT:
                 $ret = 'Check-out';
+                break;
+            case self::ATT_TYPE_OVERTIME_IN:
+                $ret = 'Overtime-in';
+                break;
+            case self::ATT_TYPE_OVERTIME_OUT:
+                $ret = 'Overtime-out';
                 break;
             default:
                 $ret = 'Undefined';
