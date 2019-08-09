@@ -162,10 +162,7 @@
             </table>
             <?php
                 if (count($attendance) > 0) {
-                    //$zk->clearAttendance(); // Remove attendance log only if not empty
-                    //$zk->setUser(1318, '14133', 'TestUser', '', ZK\Util::LEVEL_ADMIN); //Adding new user
-                   // $zk->removeUser(1317); //Deleting sepcific user
-                    //$zk->setUser(1318, '14133', 'TestUser3', '', ZK\Util::LEVEL_USER); //updating last name just put the UID and ID and send it again | the RFID not working
+                    $zk->clearAttendance(); // Remove attendance log only if not empty
                 }
             ?>
         <?php } ?>
