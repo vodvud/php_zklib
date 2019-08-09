@@ -5,6 +5,7 @@
 
 <body>
 <?php
+    date_default_timezone_set('Asia/Manila'); //Default Timezone Of Your Country
     $enableGetDeviceInfo = true;
     $enableGetUsers = true;
     $enableGetData = true;
@@ -140,6 +141,7 @@
             ?>
         <?php } ?>
         <?php
+        $zk->setTime(date('Y-m-d H:i:s')); // Synchronize time
         $zk->enableDevice();
         $zk->disconnect();
     }
