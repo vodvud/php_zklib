@@ -228,11 +228,12 @@ class ZKLib
      * @param string $name (max length = 24)
      * @param int|string $password (max length = 8, only numbers - depends device setting)
      * @param int $role Default Util::LEVEL_USER
+     * @param int $cardno Default 0 (max length = 10, only numbers)
      * @return bool|mixed
      */
-    public function setUser($uid, $userid, $name, $password, $role = Util::LEVEL_USER)
+    public function setUser($uid, $userid, $name, $password, $role = Util::LEVEL_USER, $cardno = 0)
     {
-        return (new ZK\User())->set($this, $uid, $userid, $name, $password, $role);
+        return (new ZK\User())->set($this, $uid, $userid, $name, $password, $role, $cardno);
     }
 
     /**

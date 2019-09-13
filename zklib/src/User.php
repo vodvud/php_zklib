@@ -13,9 +13,10 @@ class User
      * @param string $name (max length = 24)
      * @param int|string $password (max length = 8, only numbers - depends device setting)
      * @param int $role Default Util::LEVEL_USER
+     * @param int $cardno Default 0 (max length = 10, only numbers)
      * @return bool|mixed
      */
-    public function set(ZKLib $self, $uid, $userid, $name, $password, $role = Util::LEVEL_USER)
+    public function set(ZKLib $self, $uid, $userid, $name, $password, $role = Util::LEVEL_USER, $cardno = 0)
     {
         $self->_section = __METHOD__;
 
@@ -24,7 +25,8 @@ class User
             (int)$uid > Util::USHRT_MAX ||
             strlen($userid) > 9 ||
             strlen($name) > 24 ||
-            strlen($password) > 8
+            strlen($password) > 8 ||
+            strlen($cardno) > 10
         ) {
             return false;
         }
@@ -32,12 +34,15 @@ class User
         $command = Util::CMD_SET_USER;
         $byte1 = chr((int)($uid % 256));
         $byte2 = chr((int)($uid >> 8));
+        $cardno = hex2bin(Util::reverseHex(dechex($cardno)));
+
         $command_string = implode('', [
             $byte1,
             $byte2,
             chr($role),
             str_pad($password, 8, chr(0)),
-            str_pad($name, 28, chr(0)),
+            str_pad($name, 24, chr(0)),
+            str_pad($cardno, 4, chr(0)),
             str_pad(chr(1), 9, chr(0)),
             str_pad($userid, 9, chr(0)),
             str_repeat(chr(0), 15)
